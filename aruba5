@@ -1,0 +1,58 @@
+Last login: 2026-09-16 15:00:41 from the console
+User "ethangrishin" has logged in 1 time in the past 30 days
+ARUBACX5# do show running-config
+Invalid input: do
+ARUBACX5# show running-config
+Current configuration:
+!
+!Version ArubaOS-CX Virtual.10.04.0001
+!export-password: default
+hostname ARUBACX5
+domain-name office.com
+user admin group administrators password ciphertext AQBapc8UruzgqpYJ3rdPcT2dvgp/pUo8VfGqaonGq5VAIh1ZYgAAAOTsRnKBFSoo+7qNtPZ/vnqm1QFjExFvBQ6mrwblY6M8YQk0OUq84rEgOhXLbzrXDjBc4v+/SZrTiBq+0sG1hmqPInR1XzRd6gkmyNZcq1Ou5BoQxIF90wQT34b4tdD9BjcI
+user ethangrishin group administrators password ciphertext AQBapauNiCzI+s1eQReISWjny5jwbIOaLANUmZTOkV0Zzn6MYgAAAL2BUSHhp3X6WpM3pt1q4WsSQ0lDXSAcO8XMunYdkOT0d7WNvkEkbK0gMaO3jX2ORagK/5LlJ9MiN6m3Gs8ePbujHlH103Eu682DllXS0rTzF0NPJm4/uOjDHJ8afqu9Wlx/
+led locator on
+!
+!
+!
+!
+ssh server vrf mgmt
+!
+!
+!
+!
+!
+vlan 1
+vlan 10
+    name vlan10
+vlan 20
+    name vlan20
+vlan 30
+    name vlan30
+vlan 40
+    name vlan 40
+vlan 99
+    name native_trunk
+spanning-tree mode rpvst
+interface mgmt
+    no shutdown
+    ip dhcp
+port-access port-security enable
+interface 1/1/1
+    no shutdown
+    no routing
+    vlan trunk native 99 tag
+    vlan trunk allowed 10,20,30,40
+interface 1/1/2
+    no shutdown
+    no lldp transmit
+    no lldp receive
+    no routing
+    vlan access 40
+    spanning-tree bpdu-guard
+    spanning-tree port-type admin-edge
+    port-access security violation action shutdown
+    port-access port-security
+        client-limit 10
+https-server vrf mgmt
+ARUBACX5#

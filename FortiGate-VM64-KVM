@@ -1,0 +1,112 @@
+FortiGate-VM64-KVM #
+FortiGate-VM64-KVM # show system interface
+config system interface
+    edit "port1"
+        set vdom "root"
+        set ip 172.168.48.2 255.255.255.252
+        set allowaccess ping
+        set type physical
+        set snmp-index 1
+    next
+    edit "port2"
+        set vdom "root"
+        set ip 172.168.48.6 255.255.255.252
+        set allowaccess ping
+        set type physical
+        set snmp-index 2
+    next
+    edit "port3"
+        set vdom "root"
+        set ip 203.20.1.2 255.255.255.252
+        set allowaccess ping
+        set type physical
+        set snmp-index 3
+    next
+    edit "port4"
+        set vdom "root"
+        set ip 203.20.1.6 255.255.255.252
+        set allowaccess ping
+        set type physical
+        set snmp-index 4
+    next
+    edit "naf.root"
+        set vdom "root"
+        set type tunnel
+        set src-check disable
+        set snmp-index 5
+    next
+    edit "l2t.root"
+        set vdom "root"
+        set type tunnel
+        set snmp-index 6
+    next
+    edit "ssl.root"
+        set vdom "root"
+        set type tunnel
+        set alias "SSL VPN interface"
+        set snmp-index 7
+    next
+    edit "fortilink"
+        set vdom "root"
+        set fortilink enable
+        set ip 10.255.1.1 255.255.255.0
+        set allowaccess ping fabric
+        set type aggregate
+        set lldp-reception enable
+        set lldp-transmission enable
+        set snmp-index 8
+    next
+end
+
+FortiGate-VM64-KVM # show firewall policy
+config firewall policy
+    edit 1
+        set name "LAN_to_WAN"
+        set uuid 7e69182e-b209-51f1-0c1c-f614257c998b
+        set srcintf "port1" "port2"
+        set dstintf "port3" "port4"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "ALL"
+        set nat enable
+    next
+    edit 3
+        set name "ASBR1_to_ASBR2"
+        set uuid 8ed4863e-b20f-51f1-45b9-7c91404d8bcc
+        set srcintf "port1"
+        set dstintf "port2"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "ALL"
+    next
+    edit 4
+        set name "ASBR2_to_ASBR1"
+        set uuid ac85517c-b20f-51f1-a618-358acbdd7803
+        set srcintf "port2"
+        set dstintf "port1"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "ALL"
+    next
+end
+
+FortiGate-VM64-KVM # show router static
+config router static
+    edit 1
+        set gateway 203.20.1.1
+        set device "port3"
+    next
+    edit 2
+        set gateway 203.20.1.5
+        set distance 20
+        set device "port4"
+    next
+end
+
+FortiGate-VM64-KVM #

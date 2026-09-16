@@ -1,0 +1,235 @@
+Building configuration...
+
+Current configuration : 5326 bytes
+!
+! Last configuration change at 20:42:25 UTC Wed Sep 16 2026 by ethangrishin
+!
+version 15.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname ASBR2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain name office.com
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username ethangrishin privilege 15 secret 9 $9$TnXlSRGaFZFk29$Fm7bF2ymX6.YTjKihiJeS08UsqkYFXpRUB3Acf3rwYY
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.1.1.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 172.168.10.1 255.255.255.0
+ standby version 2
+ standby 10 ip 172.168.10.3
+ standby 10 priority 254
+ standby 10 preempt
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 172.168.20.1 255.255.255.0
+ standby version 2
+ standby 20 ip 172.168.20.3
+ standby 20 priority 254
+ standby 20 preempt
+!
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 172.168.30.1 255.255.255.0
+ standby version 2
+ standby 30 ip 172.168.30.3
+ standby 30 priority 255
+ standby 30 preempt
+!
+interface GigabitEthernet0/0.40
+ encapsulation dot1Q 40
+ ip address 172.168.40.1 255.255.255.0
+ standby version 2
+ standby 40 ip 172.168.40.3
+ standby 40 priority 255
+ standby 40 preempt
+!
+interface GigabitEthernet0/0.99
+ encapsulation dot1Q 99 native
+ ip address 172.168.99.1 255.255.255.0
+!
+interface GigabitEthernet0/1
+ ip address 172.168.48.5 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp OFFICE
+ !
+ address-family ipv4 unicast autonomous-system 100
+  !
+  af-interface GigabitEthernet0/0.99
+   authentication mode hmac-sha-256 github1
+  exit-af-interface
+  !
+  af-interface GigabitEthernet0/0.10
+   authentication mode hmac-sha-256 github1
+  exit-af-interface
+  !
+  af-interface GigabitEthernet0/0.20
+   authentication mode hmac-sha-256 github1
+  exit-af-interface
+  !
+  af-interface GigabitEthernet0/0.30
+   authentication mode hmac-sha-256 github1
+  exit-af-interface
+  !
+  af-interface GigabitEthernet0/0.40
+   authentication mode hmac-sha-256 github1
+  exit-af-interface
+  !
+  af-interface Loopback0
+   authentication mode hmac-sha-256 github1
+  exit-af-interface
+  !
+  topology base
+   redistribute ospf 1 metric 10000 100 255 1 1500
+  exit-af-topology
+  network 10.1.1.1 0.0.0.0
+  network 172.168.10.1 0.0.0.0
+  network 172.168.20.1 0.0.0.0
+  network 172.168.30.1 0.0.0.0
+  network 172.168.40.1 0.0.0.0
+  network 172.168.99.1 0.0.0.0
+  eigrp router-id 10.1.1.1
+ exit-address-family
+!
+router ospf 1
+ router-id 10.1.1.1
+ redistribute eigrp 100 subnets
+ network 172.168.30.0 0.0.0.255 area 0
+ network 172.168.40.0 0.0.0.255 area 0
+ network 172.168.48.4 0.0.0.3 area 0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 172.168.48.6
+!
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ logging synchronous
+ login local
+line aux 0
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 924
+ login local
+ transport input ssh
+!
+no scheduler allocate
+!
+end
+
+ASBR2(config)#
+
